@@ -15,6 +15,15 @@
             />
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="dnd_sync_nightime"
+            app:title="Sync DND at night"
+            app:summaryOn="Sync only during night time"
+            app:summaryOff="Sync only during night time"
+            />
+
+        <SwitchPreferenceCompat
             app:iconSpaceReserved="false"
             app:key="bedtime_key"
             app:defaultValue="false"

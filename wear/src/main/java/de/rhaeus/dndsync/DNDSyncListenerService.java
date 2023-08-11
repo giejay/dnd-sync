@@ -16,6 +16,8 @@ import androidx.preference.PreferenceManager;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.WearableListenerService;
 
+import java.util.Calendar;
+
 public class DNDSyncListenerService extends WearableListenerService {
     private static final String TAG = "DNDSyncListenerService";
     private static final String DND_SYNC_MESSAGE_PATH = "/wear-dnd-sync";
@@ -27,8 +29,16 @@ public class DNDSyncListenerService extends WearableListenerService {
         }
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        boolean dndSyncNightime = prefs.getBoolean("dnd_sync_nightime", true);
+
         if (messageEvent.getPath().equalsIgnoreCase(DND_SYNC_MESSAGE_PATH)) {
             Log.d(TAG, "received path: " + DND_SYNC_MESSAGE_PATH);
+
+            int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            if(dndSyncNightime && hourOfDay > 8 && hourOfDay < 22){
+                Log.d(TAG, "Ignoring DND because of daytime");
+                return;
+            }
 
             boolean vibrate = prefs.getBoolean("vibrate_key", false);
             Log.d(TAG, "vibrate: " + vibrate);
