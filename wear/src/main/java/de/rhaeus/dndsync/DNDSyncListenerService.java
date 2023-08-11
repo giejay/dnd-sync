@@ -33,19 +33,6 @@ public class DNDSyncListenerService extends WearableListenerService {
 
         if (messageEvent.getPath().equalsIgnoreCase(DND_SYNC_MESSAGE_PATH)) {
             Log.d(TAG, "received path: " + DND_SYNC_MESSAGE_PATH);
-
-            int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            if(dndSyncNightime && hourOfDay > 8 && hourOfDay < 22){
-                Log.d(TAG, "Ignoring DND because of daytime");
-                return;
-            }
-
-            boolean vibrate = prefs.getBoolean("vibrate_key", false);
-            Log.d(TAG, "vibrate: " + vibrate);
-            if (vibrate) {
-                vibrate();
-            }
-
             byte[] data = messageEvent.getData();
             // data[0] contains dnd mode of phone
             // 0 = INTERRUPTION_FILTER_UNKNOWN
@@ -55,6 +42,12 @@ public class DNDSyncListenerService extends WearableListenerService {
             // 4 = INTERRUPTION_FILTER_ALARMS
             byte dndStatePhone = data[0];
             Log.d(TAG, "dndStatePhone: " + dndStatePhone);
+
+            int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            if(dndStatePhone == 2 && dndSyncNightime && hourOfDay > 8 && hourOfDay < 22){
+                Log.d(TAG, "Ignoring DND because of daytime");
+                return;
+            }
 
             // get dnd state
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -72,6 +65,11 @@ public class DNDSyncListenerService extends WearableListenerService {
                 Log.d(TAG, "useBedtimeMode: " + useBedtimeMode);
                 if (useBedtimeMode) {
                     toggleBedtimeMode();
+                }
+                boolean vibrate = prefs.getBoolean("vibrate_key", false);
+                Log.d(TAG, "vibrate: " + vibrate);
+                if (vibrate) {
+                    vibrate();
                 }
                 // set DND anyways, also in case bedtime toggle does not work to have at least DND
                 if (mNotificationManager.isNotificationPolicyAccessGranted()) {
