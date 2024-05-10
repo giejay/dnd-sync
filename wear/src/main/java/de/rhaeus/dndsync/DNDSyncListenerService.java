@@ -44,7 +44,7 @@ public class DNDSyncListenerService extends WearableListenerService {
             Log.d(TAG, "dndStatePhone: " + dndStatePhone);
 
             int hourOfDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            if(dndStatePhone == 2 && dndSyncNightime && hourOfDay > 8 && hourOfDay < 22){
+            if(dndStatePhone == 2 && dndSyncNightime && hourOfDay > 8 && hourOfDay < 21){
                 Log.d(TAG, "Ignoring DND because of daytime");
                 return;
             }
