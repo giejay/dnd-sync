@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace "de.rhaeus.dndsync"
     compileSdk 31
 
     defaultConfig {
